@@ -3,10 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MODELOS DINAMICOS</title>
+    <title>Modelos Dinamicos</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <h1>Problema de la Diligencia</h1>
+    <hr />
+    <label>Cantidad Nodos</label>
+    <input id="numNodes" type="number" min="2" />
+    <button onclick="createAdjacentList()">Crear Lista Adyacente</button>
+    <hr />
+    <div id="AdjacentList"></div>
+
+    <script>
+      var maxNodes;
+      var nodes = {};
+      var phases = {};
+
+      function createAdjacentList() {
+        maxNodes = parseInt(document.getElementById("numNodes").value);
+        var spaceAL = document.getElementById("AdjacentList");
+        spaceAL.innerHTML = "";
+
+        for (var i = 0; i < maxNodes; i++) {
+          var label = document.createElement("p");
+          var input_phase = document.createElement("input");
+          label.textContent = i + "->";
+          input_phase.placeholder = "Num Etapa nodo: " + i;
+          input_phase.id = i;
+          spaceAL.appendChild(label);
+          spaceAL.appendChild(input_phase);
+
+          for (var j = i + 1; j <= maxNodes; j++) {
+            var input = document.createElement("input");
+            input.placeholder = i + " -> " + j;
+            input.id = i + "" + j;
+            spaceAL.appendChild(input);
+          }
+          var space = document.createElement("br");
+          spaceAL.appendChild(space);
+        }
+
+        var solve_button = document.createElement("button");
+        solve_button.textContent = "Solucionar";
+        solve_button.id = "solve_button";
+        solve_button.onclick = function () {
+          createObject();
+        };
+        spaceAL.appendChild(solve_button);
+
+        var graphics_button = document.createElement("button");
+        graphics_button.textContent = "Gráficar";
+        graphics_button.id = "graphics_button";
+        spaceAL.appendChild(graphics_button);
+      }
+
+      function createObject() {
+        maxNodes = parseInt(document.getElementById("numNodes").value);
+
+        for (var i = 0; i < maxNodes; i++) {
+          var phaseValue = document.getElementById(i).value;
+          nodes[i] = {};
+
+          phases[i] = parseInt(phaseValue);
+          for (var j = i + 1; j <= maxNodes; j++) {
+            var inputValue = document.getElementById(i + "" + j).value;
+            if (!isNaN(inputValue)) {
+              nodes[i][j] = parseInt(inputValue);
+            } else {
+              element = document.getElementById(i + "" + j);
+              element.style.display = "none";
+            }
+          }
+        }
+        sendSolver();
+      }
+
+      function sendSolver() {
+        var nodes_OBJ = JSON.stringify(nodes);
+        var phases_OBJ = JSON.stringify(phases);
+        fetch("http://localhost:8000/data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            conexiones: nodes_OBJ,
+            etapas: phases_OBJ,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error("Error al enviar los datos al servidor:", error);
+          });
+      }
+    </script>
   </body>
 </html>
