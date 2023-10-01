@@ -1,3 +1,20 @@
+h1,
+h2 {
+  text-align: center;
+}
+
+#input_n_graph {
+  display: flex;
+  gap: 10px;
+}
+
+#cy {
+  border: 1px solid;
+  border-radius: 5px;
+  visibility: hidden;
+  width: 50%;
+}
+
 #AdjacentList {
   width: 50vw;
   display: flex;

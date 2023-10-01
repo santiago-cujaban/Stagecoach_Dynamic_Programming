@@ -7,15 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite solicitudes desde cualquier origen
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get('/')
-def get():
-    ...
 
 @app.post('/data')
 async def send(request: Request):
@@ -24,9 +20,9 @@ async def send(request: Request):
         conexiones = json.loads(data.get("conexiones"))
         etapas = json.loads(data.get("etapas"))
 
-        solver_walker(conexiones, etapas)
+        solucion, camino = solver_walker(conexiones, etapas)
         
-        response_data = {"solucion": "UwU"}
+        response_data = {"solucion": solucion, "camino":camino}
         return response_data
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error al procesar los datos: {str(e)}")

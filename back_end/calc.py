@@ -1,13 +1,14 @@
-import copy
+import copy, json
 
 def solver_walker(graph: dict, phases: dict):
     validate_graph(graph, phases)
     reversed_graph = dict(reversed(list(graph.items()))) # Invierte el orden A -> Z por Z -> A
     solved_graph = copy.deepcopy(walk_graph(reversed_graph, graph, phases))  # Solucion del problema
     solution_best_path = find_best_paths_limited(solved_graph)  # Posibles Rutas Optimas
-    
-    print(solution_best_path)   # Imprime las posibles rutas optimas
-    for i, j in solved_graph.items(): print(f'{i} : {j}') # Imprime Grafo Solucionado
+    nodes_json = json.dumps(solved_graph)
+    path_json = json.dumps(solution_best_path)
+    print(nodes_json, path_json)
+    return nodes_json, path_json
 
 def validate_graph(graph: dict, phases:dict):
     graph_c = copy.deepcopy(graph)
@@ -117,5 +118,5 @@ def find_best_paths_limited(graph: dict):
 #phases = '1':1, '2':2, '3':2, '4':2, '5':3, '6':3, '7':3, '8':4, '9':4
 
 #3 ETAPAS
-#graph = '1':{'2':7,'3':8,'4':5}, '2':{'5':12}, '3':{'5':8,'6':9}, '4':{'5':7,'6':13}, '5':{'7':9}, '6':{'7':6}
-#phases = '1':1, '2':2, '3':2, '4':2, '5':3, '6':3
+#graph = '0':{'1':7,'2':8,'3':5}, '1':{'4':12}, '2':{'4':8,'5':9}, '3':{'4':7,'5':13}, '4':{'6':9}, '5':{'6':6}
+#phases = '0':1, '1':2, '2':2, '3':2, '4':3, '5':3
