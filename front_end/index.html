@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Modelos Dinamicos</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"
@@ -25,7 +26,7 @@
     </p>
     <hr />
     <label>Cantidad Nodos</label>
-    <input id="numNodes" type="number" min="2" />
+    <input id="numNodes" type="number" value="2" min="2" />
     <button onclick="createAdjacentList()">Crear Lista Adyacente</button>
     <hr />
 
@@ -34,154 +35,12 @@
       <div id="cy"></div>
     </div>
     <hr />
-    <div id="tables">
-      <h2>Tablas</h2>
+    <h2>RESULTADOS</h2>
+    <div id="final_results">
+      <div id="Tables"></div>
+      <div id="BestPath"></div>
     </div>
 
-    <script>
-      var maxNodes;
-      var nodes = {};
-      var phases = {};
-
-      // Crea la lista adjacente visualmente
-      function createAdjacentList() {
-        maxNodes = parseInt(document.getElementById("numNodes").value);
-        var spaceAL = document.getElementById("AdjacentList");
-        spaceAL.innerHTML = "";
-
-        for (var i = 0; i < maxNodes; i++) {
-          var label = document.createElement("p");
-          var input_phase = document.createElement("input");
-          label.textContent = i + "->";
-          input_phase.placeholder = "Num Etapa nodo: " + i;
-          input_phase.id = i;
-          spaceAL.appendChild(label);
-          spaceAL.appendChild(input_phase);
-
-          for (var j = i + 1; j <= maxNodes; j++) {
-            var input = document.createElement("input");
-            input.placeholder = i + " -> " + j;
-            input.id = i + "" + j;
-            spaceAL.appendChild(input);
-          }
-        }
-
-        var solve_button = document.createElement("button");
-        solve_button.textContent = "Solucionar";
-        solve_button.id = "solve_button";
-        solve_button.onclick = function () {
-          createObject();
-        };
-        spaceAL.appendChild(solve_button);
-      }
-
-      // Toma el valor de cada elemento y crea un objeto
-      function createObject() {
-        maxNodes = parseInt(document.getElementById("numNodes").value);
-
-        for (var i = 0; i < maxNodes; i++) {
-          var phaseValue = document.getElementById(i).value;
-          nodes[i] = {};
-
-          phases[i] = parseInt(phaseValue);
-          for (var j = i + 1; j <= maxNodes; j++) {
-            var inputValue = document.getElementById(i + "" + j).value;
-            if (!isNaN(inputValue)) {
-              nodes[i][j] = parseInt(inputValue);
-            } else {
-              element = document.getElementById(i + "" + j);
-              element.style.display = "none";
-            }
-          }
-        }
-        createGraphView();
-        sendSolver();
-      }
-
-      // Crea la Gráfica de los nodos
-      function createGraphView() {
-        const copy_nodes = { ...nodes };
-        const last_key_pos = Object.keys(copy_nodes).length;
-        copy_nodes[last_key_pos] = {};
-        const data = copy_nodes;
-        var elements = [];
-
-        for (var key in data) {
-          if (data.hasOwnProperty(key)) {
-            elements.push({ data: { id: key } });
-
-            // Add edges
-            var edges = data[key];
-            for (var target in edges) {
-              if (edges.hasOwnProperty(target)) {
-                elements.push({
-                  data: {
-                    source: key,
-                    target: target,
-                    weight: edges[target],
-                    label: edges[target].toString(),
-                  },
-                });
-              }
-            }
-          }
-        }
-
-        document.getElementById("cy").style.visibility = "visible";
-        var cy = cytoscape({
-          container: document.getElementById("cy"),
-          elements: elements,
-          style: [
-            {
-              selector: "node",
-              style: {
-                "background-color": "#66ccff",
-                label: "data(id)",
-              },
-            },
-            {
-              selector: "edge",
-              style: {
-                label: "data(label)", // Display the edge label
-                "text-rotation": "autorotate", // Automatically rotate text for better visibility
-                "text-margin-x": "5px", // Adjust text margin as needed
-                "text-margin-y": "5px",
-              },
-            },
-          ],
-          layout: {
-            name: "grid",
-            animate: true,
-          },
-        });
-      }
-
-      // Manda el objeto como JSON al servidor Python
-      // obtiene la solucion y algunos caminos posibles
-
-      function sendSolver() {
-        var nodes_OBJ = JSON.stringify(nodes);
-        var phases_OBJ = JSON.stringify(phases);
-        fetch("http://localhost:8000/data", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            conexiones: nodes_OBJ,
-            etapas: phases_OBJ,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data.solucion);
-            console.log(data.camino);
-            // create tables
-          })
-          .catch((error) => {
-            console.error("Error al enviar los datos al servidor:", error);
-          });
-      }
-    </script>
+    <script src="main.js"></script>
   </body>
 </html>

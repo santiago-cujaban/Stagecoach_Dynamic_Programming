@@ -7,7 +7,6 @@ def solver_walker(graph: dict, phases: dict):
     solution_best_path = find_best_paths_limited(solved_graph)  # Posibles Rutas Optimas
     nodes_json = json.dumps(solved_graph)
     path_json = json.dumps(solution_best_path)
-    print(nodes_json, path_json)
     return nodes_json, path_json
 
 def validate_graph(graph: dict, phases:dict):
@@ -114,8 +113,8 @@ def find_best_paths_limited(graph: dict):
 #phases = 'A':1, 'B':2, 'C':2, 'D':2, 'E':3, 'F':3, 'G':4, 'H':4, 'I':5, 'J':5, 'K':5
 
 #4 ETAPAS
-#graph = '1':{'2':2,'3':4,'4':3}, '2':{'5':7,'6':4,'7':6}, '3':{'5':3,'6':2,'7':4}, '4':{'5':4,'6':1,'7':5}, '5':{'8':1,'9':4}, '6':{'8':6,'9':3}, '7':{'8':3,'9':3}, '8':{'10':3}, '9':{'10':4}
-#phases = '1':1, '2':2, '3':2, '4':2, '5':3, '6':3, '7':3, '8':4, '9':4
+#graph = '0':{'1':2,'2':4,'3':3}, '1':{'4':7,'5':4,'6':6}, '2':{'4':3,'5':2,'6':4}, '3':{'4':4,'5':1,'6':5}, '4':{'7':1,'8':4}, '5':{'7':6,'8':3}, '6':{'7':3,'8':3}, '7':{'9':3}, '8':{'9':4}
+#phases = '0':1, '1':2, '2':2, '3':2, '4':3, '5':3, '6':3, '7':4, '8':4
 
 #3 ETAPAS
 #graph = '0':{'1':7,'2':8,'3':5}, '1':{'4':12}, '2':{'4':8,'5':9}, '3':{'4':7,'5':13}, '4':{'6':9}, '5':{'6':6}

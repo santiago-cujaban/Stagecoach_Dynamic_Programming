@@ -19,9 +19,7 @@ async def send(request: Request):
         data = await request.json()
         conexiones = json.loads(data.get("conexiones"))
         etapas = json.loads(data.get("etapas"))
-
-        solucion, camino = solver_walker(conexiones, etapas)
-        
+        solucion, camino = solver_walker(conexiones, etapas)        
         response_data = {"solucion": solucion, "camino":camino}
         return response_data
     except Exception as e:

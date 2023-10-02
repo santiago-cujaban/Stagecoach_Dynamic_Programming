@@ -1,5 +1,43 @@
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Style table header */
+th,
+td {
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding: 8px;
+}
+
+/* Style alternate rows for better readability */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
 h1,
-h2 {
+h2,
+h3 {
+  text-align: center;
+}
+
+#final_results {
+  display: flex;
+  gap: 10px;
+}
+
+#Tables {
+  border: 1px solid;
+  border-radius: 5px;
+  width: 50%;
+  text-align: center;
+}
+
+#BestPath {
+  border: 1px solid;
+  border-radius: 5px;
+  width: 50%;
   text-align: center;
 }
 
