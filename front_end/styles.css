@@ -1,9 +1,174 @@
+* {
+  font-family: nunito;
+}
+
+body {
+  background-color: #fdfcf3;
+}
+
+button {
+  font-weight: 800;
+  height: 25px;
+}
+
+button:hover {
+  background-color: #e3b23c;
+  color: white;
+  border-radius: 5px;
+}
+
+input {
+  text-align: center;
+  font-weight: 600;
+  height: 22px;
+}
+
+input:focus {
+  background-color: lightblue;
+}
+
+h1 {
+  text-align: center;
+  margin: 0 0 20px 0;
+  padding: 10px;
+  color: white;
+  background-color: black;
+}
+
+h2 {
+  background-color: #ddffdd;
+  border-left: 6px solid #04aa6d;
+  text-align: center;
+}
+
+#Info {
+  margin: 10px 0 30px 0;
+  display: block;
+  height: 165px;
+  overflow: auto;
+  justify-content: center;
+  text-align: center;
+  background-color: #e7f3fe;
+  border-left: 6px solid #2196f3;
+}
+
+#Error {
+  font-weight: 700;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  background-color: #ffdddd;
+  border-left: 6px solid #f44336;
+  text-align: center;
+}
+
+.MainInput {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+#Create_By_List {
+  display: flex;
+  justify-content: center;
+  width: 50%;
+  gap: 10px;
+}
+
+#Create_By_List label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#Create_By_Text {
+  display: flex;
+  justify-content: center;
+  width: 50%;
+  gap: 10px;
+}
+
+#Create_By_Text input {
+  flex: 1;
+}
+
+.Input_Graph {
+  display: flex;
+  height: 350px;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+#AdjacentList {
+  width: 50%;
+  overflow: scroll;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#AdjacentList * {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#AdjacentList p {
+  margin: 0;
+  padding-bottom: 5px;
+  border: 1px solid;
+  color: white;
+  background-color: black;
+}
+
+#cy {
+  border: 1px solid;
+  border-radius: 5px;
+  display: none;
+  width: 50%;
+}
+
+.Titles {
+  display: flex;
+  margin: 0 0 20px 0;
+}
+
+.Titles h3 {
+  text-align: center;
+  width: 50%;
+  margin: 0;
+}
+
+.Final_Results {
+  display: flex;
+  gap: 20px;
+}
+
+#Tables {
+  width: 50%;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+caption {
+  margin: 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid;
+  font-weight: 800;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
 }
 
-/* Style table header */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
 th,
 td {
   border: 1px solid #dddddd;
@@ -11,51 +176,20 @@ td {
   padding: 8px;
 }
 
-/* Style alternate rows for better readability */
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-h1,
-h2,
-h3 {
-  text-align: center;
-}
-
-#final_results {
-  display: flex;
-  gap: 10px;
-}
-
-#Tables {
-  border: 1px solid;
-  border-radius: 5px;
-  width: 50%;
-  text-align: center;
+td {
+  background-color: white;
 }
 
 #BestPath {
-  border: 1px solid;
-  border-radius: 5px;
-  width: 50%;
-  text-align: center;
-}
-
-#input_n_graph {
   display: flex;
-  gap: 10px;
-}
-
-#cy {
-  border: 1px solid;
-  border-radius: 5px;
-  visibility: hidden;
   width: 50%;
+  justify-content: center;
+  align-items: center;
+  background-color: #ddffdd;
 }
 
-#AdjacentList {
-  width: 50vw;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+#BestPath p {
+  font-weight: 900;
+  font-size: large;
+  color: #04aa6d;
 }
