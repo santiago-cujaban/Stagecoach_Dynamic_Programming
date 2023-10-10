@@ -3,6 +3,15 @@ var nodes = {};
 var phases = {};
 var errorWasAdded = false;
 
+// Segun el ingreso dentro de la lista adyacente, permite visualizar las conexiones
+function getNodeConnections(id) {
+  var inputNode = document.getElementById(id);
+  var connections = inputNode.value.split(",");
+  for (var k of connections) {
+    document.getElementById(id + " " + k).style.display = "inline";
+  }
+}
+
 // Crea la lista adjacente visualmente
 function createAdjacentList() {
   nodes = {};
@@ -15,31 +24,50 @@ function createAdjacentList() {
 
   for (var i = 0; i < maxNodes; i++) {
     var label = document.createElement("p");
-    var input_phase = document.createElement("input");
-    label.textContent = "Conexiones del Nodo " + i;
-    input_phase.placeholder = "Etapa del nodo: " + i;
-    input_phase.id = i;
-    input_phase.style.backgroundColor = "#e3b23c";
-    input_phase.autocomplete = "off";
+    label.textContent = "Nodo " + i;
     spaceAL.appendChild(label);
-    spaceAL.appendChild(input_phase);
 
     for (var j = i + 1; j <= maxNodes; j++) {
       var input = document.createElement("input");
       input.placeholder = "Nodo " + i + " -> Nodo " + j;
       input.id = i + " " + j;
       input.autocomplete = "off";
-      input.addEventListener("focus", function () {
-        // Cambia los estilos cuando el input recibe el foco
-        input.style.backgroundColor = "lightblue";
+      input.style.display = "none";
+      input.addEventListener("focus", function (event) {
+        event.target.style.backgroundColor = "#e7f3fe";
       });
+      input.addEventListener("input", function (event) {
+        if (isNaN(event.target.value)) {
+          event.target.style.backgroundColor = "#F7CAC9";
+        }
+      });
+
       spaceAL.appendChild(input);
     }
+    // Ingreso Conexiones Esenciales
+    var divForm = document.createElement("div");
+    divForm.className = "Conex";
+    var inputDisplay = document.createElement("input");
+    var buttonDisplay = document.createElement("button");
+
+    buttonDisplay.textContent = "Visualizar Conexiones Nodo " + i;
+    inputDisplay.placeholder = "Conexiones del Nodo " + i;
+    inputDisplay.autocomplete = "off";
+    inputDisplay.id = i;
+
+    buttonDisplay.onclick = function () {
+      getNodeConnections(this.previousSibling.id);
+    };
+
+    divForm.appendChild(inputDisplay);
+    divForm.appendChild(buttonDisplay);
+    spaceAL.appendChild(divForm);
   }
 
   var solve_button = document.createElement("button");
   solve_button.textContent = "Solucionar";
   solve_button.id = "solve_button";
+  solve_button.style.height = "25px";
   solve_button.onclick = function () {
     createObject();
   };
@@ -53,10 +81,12 @@ function createByText() {
   cyDiv = document.getElementById("cy");
   cyDiv.style.width = "100%";
   cyDiv.style.height = "40vh";
+
   nodes_text = document.getElementById("Nodesbytext").value;
-  phases_text = document.getElementById("Phasesbytext").value;
+
   nodes = JSON.parse(nodes_text);
-  phases = JSON.parse(phases_text);
+  findPhases();
+
   infoSpace = document.getElementById("Info");
   infoSpace.innerHTML = "";
   p = document.createElement("p");
@@ -77,26 +107,39 @@ function createByText() {
   createGraphView();
 }
 
+// encuentra las etapas correspondientes a cada nodo
+function findPhases() {
+  var lastNode = Object.keys(nodes[Object.keys(nodes).length - 1])[0];
+  console.log(lastNode);
+  phases[0] = 1;
+
+  for (node in nodes) {
+    for (key in nodes[node]) {
+      phases[key] = phases[node] + 1;
+    }
+  }
+  delete phases[lastNode];
+}
+
 // Toma el valor de cada elemento y crea un objeto
 function createObject() {
   maxNodes = parseInt(document.getElementById("numNodes").value);
 
   for (var i = 0; i < maxNodes; i++) {
-    var phaseValue = document.getElementById(i).value;
     nodes[i] = {};
-
-    phases[i] = parseInt(phaseValue);
+    // Pasa informacion de las conexiones
     for (var j = i + 1; j <= maxNodes; j++) {
       var inputValue = document.getElementById(i + " " + j).value;
       if (!isNaN(inputValue) && inputValue !== "") {
         nodes[i][j] = parseInt(inputValue);
-        document.getElementById(i + " " + j).style.backgroundColor = "white";
       } else {
-        document.getElementById(i + " " + j).style.backgroundColor = "gray";
         document.getElementById(i + " " + j).style.display = "none";
       }
     }
   }
+  // Logica detectar etapas
+  findPhases();
+
   infoSpace = document.getElementById("Info");
   infoSpace.innerHTML = "";
   p = document.createElement("p");
@@ -185,7 +228,7 @@ function createOtherTable(solution, table_space, phase) {
   var header_f = document.createElement("th");
   var header_x = document.createElement("th");
 
-  title.textContent = "Etapa" + phase;
+  title.textContent = "Etapa " + phase;
   header_s.textContent = "s";
   header_f.textContent = "f*" + phase + "(s)";
   header_x.textContent = "x*" + phase;
@@ -309,7 +352,7 @@ function createGraphView() {
       {
         selector: "node",
         style: {
-          "background-color": "#E3B23C",
+          "background-color": "#92A8D1",
           label: "data(id)",
         },
       },
