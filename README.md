@@ -1,5 +1,10 @@
 # Dynamic Programming
 
-## StageCoach
+## StageCoach Problem
 
-Solve with logic done in python and visualize in simple html, js and css.
+Solves the problem and returns the tables by phase, along with the best path.
+
+- Frontend with **HTML, JS and CSS**.
+- Backend with **Python - fastapi**.
+
+![Index.html](Main.png)
