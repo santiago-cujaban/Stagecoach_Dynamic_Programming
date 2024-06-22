@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import CytoscapeComponent from "react-cytoscapejs";
 
-const Cyto = ({ onCreateEdge, onSelectionChange }: any) => {
+const Cyto = ({ onCreateEdge, onSelectionChange, onChangeNodeLabel }: any) => {
   const initialElements: any = [];
 
   const [elements, setElements] = useState(initialElements);
@@ -67,11 +67,33 @@ const Cyto = ({ onCreateEdge, onSelectionChange }: any) => {
     }
   };
 
+  const changeNodeLabelInternal = (nodeId: any, newLabel: any) => {
+    const updatedElements = elements.map((element: any) => {
+      if (element.data.id === nodeId) {
+        return {
+          ...element,
+          data: {
+            ...element.data,
+            label: newLabel,
+          },
+        };
+      }
+      return element;
+    });
+    setElements(updatedElements);
+  };
+
   useEffect(() => {
     if (onCreateEdge) {
       onCreateEdge.current = handleCreateEdge;
     }
   }, [handleCreateEdge, onCreateEdge]);
+
+  useEffect(() => {
+    if (onChangeNodeLabel) {
+      onChangeNodeLabel.current = changeNodeLabelInternal;
+    }
+  }, [changeNodeLabelInternal, onChangeNodeLabel]);
 
   return (
     <CytoscapeComponent
@@ -106,7 +128,6 @@ const Cyto = ({ onCreateEdge, onSelectionChange }: any) => {
         });
 
         cy.on("tap", "node", (event) => {
-          console.log(elements);
           selectNodes(event);
         });
       }}
