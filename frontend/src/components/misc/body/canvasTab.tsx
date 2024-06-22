@@ -19,7 +19,6 @@ export default function CanvasTab() {
   };
 
   const handleEditNodeLabel = () => {
-    console.log(selectedNodes);
     const newLabel = window.prompt("Enter new label for the node:");
     if (newLabel !== null) {
       changeNodeLabelRef.current &&
