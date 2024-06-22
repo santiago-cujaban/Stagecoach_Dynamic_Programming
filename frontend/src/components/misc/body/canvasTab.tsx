@@ -5,6 +5,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import Cyto from "./canvas/cytoscape";
 
 export default function CanvasTab() {
   return (
@@ -13,9 +14,7 @@ export default function CanvasTab() {
         <MenubarMenu>
           <MenubarTrigger>Nodes</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>New</MenubarItem>
             <MenubarItem>Edit</MenubarItem>
-            <MenubarItem>Delete</MenubarItem>
           </MenubarContent>
         </MenubarMenu>
 
@@ -28,6 +27,7 @@ export default function CanvasTab() {
           </MenubarContent>
         </MenubarMenu>
       </Menubar>
+      <Cyto />
     </div>
   );
 }

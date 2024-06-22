@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CanvasTab from "./body/canvasTab";
 import TablesTab from "./body/tablesTab";
+import { Button } from "../ui/button";
 
 export default function BodySection() {
   return (
@@ -17,6 +18,9 @@ export default function BodySection() {
           <TablesTab />
         </TabsContent>
       </Tabs>
+      <div className="flex justify-center items-center mt-7">
+        <Button>Solve</Button>
+      </div>
     </div>
   );
 }
