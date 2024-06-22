@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import {
   Menubar,
   MenubarContent,
@@ -8,6 +9,13 @@ import {
 import Cyto from "./canvas/cytoscape";
 
 export default function CanvasTab() {
+  const createEdgeRef = useRef<() => void>(null);
+  const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
+
+  const handleSelectionChange = (nodes: any[]) => {
+    setSelectedNodes(nodes);
+  };
+
   return (
     <div>
       <Menubar>
@@ -21,13 +29,22 @@ export default function CanvasTab() {
         <MenubarMenu>
           <MenubarTrigger>Paths</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>New</MenubarItem>
+            <MenubarItem
+              onClick={() => {
+                createEdgeRef.current && createEdgeRef.current();
+              }}
+              disabled={selectedNodes.length !== 2}
+            >
+              New
+            </MenubarItem>
             <MenubarItem>Edit</MenubarItem>
-            <MenubarItem>Delete</MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>
-      <Cyto />
+      <Cyto
+        onCreateEdge={createEdgeRef}
+        onSelectionChange={handleSelectionChange}
+      />
     </div>
   );
 }
