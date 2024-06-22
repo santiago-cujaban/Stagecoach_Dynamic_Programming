@@ -4,8 +4,9 @@
 
 @layer base {
   :root {
+    --gradient: linear-gradient(180deg, #ebebeb 0%, #cccccc 100%);
     --background: 0 0% 100%;
-    --foreground: 20 14.3% 4.1%;
+    --foreground: 0, 0%, 31%;
 
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;
@@ -36,6 +37,7 @@
   }
 
   .dark {
+    --gradient: linear-gradient(180deg, #1a1a1a 0%, #363333 100%);
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
 
@@ -71,7 +73,13 @@
     @apply border-border;
     font-family: "Poppins", sans-serif;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient text-foreground;
+    margin: 50px 45px;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
 }
