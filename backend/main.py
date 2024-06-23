@@ -19,8 +19,8 @@ app.add_middleware(
 async def submit_data(req:Request):
     try:
         graph = await req.json()
-        table_data, best_paths = calculate_paths(graph)
-        return {'solution': table_data, 'paths': best_paths}
+        table_data, best_paths, phases = calculate_paths(graph)
+        return {'solution': table_data, 'paths': best_paths, 'phases': phases}
     except Exception as e:
         raise HTTPException(
             status_code=400, detail=f"Error: {str(e)}")

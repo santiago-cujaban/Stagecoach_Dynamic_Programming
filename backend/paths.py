@@ -24,8 +24,8 @@ def calculate_paths(graph_nodes:dict):
                     table_data[node]['f(s,x)'][key] = path[key] + min(multiple_solutions.values())
                 else:
                     table_data[node]['f(s,x)'][key] = path[key] + table_data[key]['f(s,x)']
-
-    return table_data, calculate_min_paths(graph_nodes)    
+    paths = calculate_min_paths(graph_nodes)
+    return table_data, paths, phases
 
 # Finds f and x
 def calculate_min_paths(graph_nodes:dict):

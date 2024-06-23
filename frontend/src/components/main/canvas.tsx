@@ -32,8 +32,8 @@ export default function Canvas() {
   }
 
   async function handleOnSendElements(elements: any[]) {
-    const { paths, solution } = await resolveData(elements); // Send this data to new script tables
-    console.log(paths, solution);
+    const { paths, solution, phases } = await resolveData(elements); // Send this data to new script tables
+    console.log(paths, solution, phases);
   }
 
   return (

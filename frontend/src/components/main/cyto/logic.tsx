@@ -8,10 +8,10 @@ async function resolveData(elems: any[]) {
   names.forEach((name) => {
     idLabel[name.data.id] = name.data.label;
   });
-  const { paths, solution } = await solveBackend(
+  const { paths, solution, phases } = await solveBackend(
     JSON.stringify(structureNodes(nodes, idLabel))
   );
-  return { paths, solution };
+  return { paths, solution, phases };
 }
 
 function structureNodes(elems: any[], idLabel: { [key: string]: string }) {
@@ -47,8 +47,8 @@ function structureNodes(elems: any[], idLabel: { [key: string]: string }) {
 async function solveBackend(graph: string) {
   try {
     const res = await axios.post("http://127.0.0.1:8000/", graph);
-    const { paths, solution } = res.data;
-    return { paths, solution };
+    const { paths, solution, phases } = res.data;
+    return { paths, solution, phases };
   } catch (err) {
     throw err;
   }
