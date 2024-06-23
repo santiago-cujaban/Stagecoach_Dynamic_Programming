@@ -10,6 +10,7 @@ export default function Cyto({
 }: any) {
   const [elements, setElements] = useState<any[]>([]);
   const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
+  const [isGraphSaved, setIsGraphSaved] = useState<boolean>(false);
 
   function getNodeCount() {
     return elements.filter(
@@ -97,6 +98,43 @@ export default function Cyto({
     }
   }
 
+  function handleSaveGraph() {
+    localStorage.setItem("graph", JSON.stringify(elements));
+    setIsGraphSaved(true);
+  }
+
+  function handleLoadGraph() {
+    const savedGraph = localStorage.getItem("graph");
+    if (savedGraph) {
+      setElements(JSON.parse(savedGraph));
+      setIsGraphSaved(true);
+    }
+  }
+
+  function handleCleanGraph() {
+    localStorage.removeItem("graph");
+    setIsGraphSaved(false);
+  }
+
+  useEffect(() => {
+    const savedGraph = localStorage.getItem("graph");
+    if (savedGraph) {
+      setIsGraphSaved(true);
+    }
+
+    function handleStorageChange(event: StorageEvent) {
+      if (event.key === "graph") {
+        setIsGraphSaved(localStorage.getItem("graph") !== null);
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   useEffect(() => {
     if (onCreateEdge) {
       onCreateEdge.current = handleCreateEdge;
@@ -172,8 +210,22 @@ export default function Cyto({
           },
         ]}
       />
-      <div className="flex justify-center items-center mt-7">
+      <div className="flex justify-center items-center mt-7 gap-5">
         <Button onClick={handleOnSendElements}>Solve</Button>
+        {!isGraphSaved ? (
+          <Button variant="secondary" onClick={handleSaveGraph}>
+            Save Graph
+          </Button>
+        ) : (
+          <>
+            <Button variant="secondary" onClick={handleLoadGraph}>
+              Load Graph
+            </Button>
+            <Button variant="destructive" onClick={handleCleanGraph}>
+              Clear Saved Graph
+            </Button>
+          </>
+        )}
       </div>
     </>
   );
