@@ -46,12 +46,11 @@ def calculate_min_paths(graph_nodes:dict):
     
     list_of_paths = find_best_paths(rev_dict, first_node, last_node)
     for id, path in enumerate(list_of_paths):
-        sum = 0
         for value in path:
             if value != last_node:
-                sum += rev_dict[value]['f']
                 best_paths[f'path {id}'] = {'nodes': path}
-        best_paths[f'path {id}']['sum'] = sum
+
+        best_paths[f'path {id}']['sum'] = table_data[first_node]['f']
             
     return best_paths
 

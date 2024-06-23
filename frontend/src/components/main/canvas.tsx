@@ -6,7 +6,8 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import Cyto from "./cyto";
+import Cyto from "./cyto/cyto";
+import { resolveData } from "./cyto/logic";
 
 export default function Canvas() {
   const createEdgeRef = useRef<() => void>(null);
@@ -30,8 +31,9 @@ export default function Canvas() {
     }
   }
 
-  function handleOnSendElements(elements: any[]) {
-    console.log(elements);
+  async function handleOnSendElements(elements: any[]) {
+    const { paths, solution } = await resolveData(elements); // Send this data to new script tables
+    console.log(paths, solution);
   }
 
   return (

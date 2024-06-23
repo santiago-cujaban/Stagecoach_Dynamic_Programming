@@ -1,4 +1,4 @@
-import Canvas from "./cyto/canvas";
+import Canvas from "./canvas";
 
 export default function Body() {
   return (
