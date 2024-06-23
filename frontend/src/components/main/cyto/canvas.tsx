@@ -6,9 +6,9 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import Cyto from "./canvas/cytoscape";
+import Cyto from "./cyto";
 
-export default function CanvasTab() {
+export default function Canvas() {
   const createEdgeRef = useRef<() => void>(null);
   const changeNodeLabelRef =
     useRef<(nodeId: any, newLabel: string) => void>(null);
@@ -19,7 +19,9 @@ export default function CanvasTab() {
   };
 
   const handleEditNodeLabel = () => {
-    const newLabel = window.prompt("Enter new label for the node:");
+    const newLabel = window.prompt(
+      `Enter new label for the node with ID ${selectedNodes[1]}`
+    );
     if (newLabel !== null) {
       changeNodeLabelRef.current &&
         changeNodeLabelRef.current(selectedNodes[1], newLabel);

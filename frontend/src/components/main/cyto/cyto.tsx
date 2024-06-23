@@ -98,7 +98,7 @@ const Cyto = ({ onCreateEdge, onSelectionChange, onChangeNodeLabel }: any) => {
   return (
     <CytoscapeComponent
       elements={elements}
-      style={{ height: "510px", background: "#C3C3C3" }}
+      style={{ height: "510px", background: "hsl(0, 0%, 76%)" }}
       cy={(cy) => {
         cy.on("cxttap", "node", (event) => {
           const nodeId = event.target.id();

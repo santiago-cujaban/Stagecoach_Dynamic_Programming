@@ -1,8 +1,8 @@
-import Header from "./components/misc/header";
+import Header from "./components/main/header";
+import BodySection from "./components/main/body";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { ThemeProvider } from "./components/ui/theme-provider";
 import { Button } from "./components/ui/button";
-import BodySection from "./components/misc/bodySection";
 
 function App() {
   return (
