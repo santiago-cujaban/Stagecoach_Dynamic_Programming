@@ -1,19 +1,23 @@
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import CytoscapeComponent from "react-cytoscapejs";
 
-const Cyto = ({ onCreateEdge, onSelectionChange, onChangeNodeLabel }: any) => {
-  const initialElements: any = [];
-
-  const [elements, setElements] = useState(initialElements);
+export default function Cyto({
+  onCreateEdge,
+  onSelectionChange,
+  onChangeNodeLabel,
+  onSendElements,
+}: any) {
+  const [elements, setElements] = useState<any[]>([]);
   const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
 
-  const getNodeCount = () => {
+  function getNodeCount() {
     return elements.filter(
       (element: any) => !element.data.source && !element.data.target
     ).length;
-  };
+  }
 
-  function createNodes(event: any) {
+  function handleCreateNode(event: any) {
     const { position } = event;
     const newNodeId = getNodeCount() + 1;
     const newNode = {
@@ -25,22 +29,24 @@ const Cyto = ({ onCreateEdge, onSelectionChange, onChangeNodeLabel }: any) => {
     setElements(updatedElements);
   }
 
-  function selectNodes(event: any) {
+  function handleSelectNodes(event: any) {
     const nodeId = event.target.id();
-    const updatedSelectedNodes = [...selectedNodes, nodeId].slice(-2); // Ensure only two nodes are selected
-    setSelectedNodes(updatedSelectedNodes);
-    onSelectionChange(updatedSelectedNodes);
+    const updatedSelectedNodes = [...selectedNodes, nodeId];
+    if (updatedSelectedNodes.length > 2) {
+      setSelectedNodes([]);
+      onSelectionChange([]);
+    } else {
+      setSelectedNodes(updatedSelectedNodes);
+      onSelectionChange(updatedSelectedNodes);
+    }
   }
 
-  const handleCreateEdge = () => {
+  function handleCreateEdge() {
     if (selectedNodes.length === 2) {
       const [source, target] = selectedNodes;
-
-      // Check if edge already exists
       const edgeExists = elements.some(
         (element: any) =>
-          (element.data.source === source && element.data.target === target) ||
-          (element.data.source === target && element.data.target === source)
+          element.data.source === source && element.data.target === target
       );
 
       if (!edgeExists) {
@@ -62,12 +68,12 @@ const Cyto = ({ onCreateEdge, onSelectionChange, onChangeNodeLabel }: any) => {
         }
       }
 
-      setSelectedNodes([]); // Reset selected nodes after creating an edge
+      setSelectedNodes([]);
       onSelectionChange([]);
     }
-  };
+  }
 
-  const changeNodeLabelInternal = (nodeId: any, newLabel: any) => {
+  function changeNodeLabel(nodeId: any, newLabel: any) {
     const updatedElements = elements.map((element: any) => {
       if (element.data.id === nodeId) {
         return {
@@ -81,7 +87,15 @@ const Cyto = ({ onCreateEdge, onSelectionChange, onChangeNodeLabel }: any) => {
       return element;
     });
     setElements(updatedElements);
-  };
+    setSelectedNodes([]);
+    onSelectionChange([]);
+  }
+
+  function handleOnSendElements() {
+    if (onSendElements) {
+      onSendElements(elements);
+    }
+  }
 
   useEffect(() => {
     if (onCreateEdge) {
@@ -91,74 +105,76 @@ const Cyto = ({ onCreateEdge, onSelectionChange, onChangeNodeLabel }: any) => {
 
   useEffect(() => {
     if (onChangeNodeLabel) {
-      onChangeNodeLabel.current = changeNodeLabelInternal;
+      onChangeNodeLabel.current = changeNodeLabel;
     }
-  }, [changeNodeLabelInternal, onChangeNodeLabel]);
+  }, [changeNodeLabel, onChangeNodeLabel]);
 
   return (
-    <CytoscapeComponent
-      elements={elements}
-      style={{ height: "510px", background: "hsl(0, 0%, 76%)" }}
-      cy={(cy) => {
-        cy.on("cxttap", "node", (event) => {
-          const nodeId = event.target.id();
-          const updatedElements = elements.filter(
-            (element: any) =>
-              element.data.id !== nodeId &&
-              element.data.source !== nodeId &&
-              element.data.target !== nodeId
-          );
-          setElements(updatedElements);
-          cy.remove(event.target);
-        });
+    <>
+      <CytoscapeComponent
+        elements={elements}
+        style={{ height: "510px", background: "hsl(0, 0%, 76%)" }}
+        cy={(cy) => {
+          cy.on("cxttap", "node", (event) => {
+            const nodeId = event.target.id();
+            const updatedElements = elements.filter(
+              (element: any) =>
+                element.data.id !== nodeId &&
+                element.data.source !== nodeId &&
+                element.data.target !== nodeId
+            );
+            setElements(updatedElements);
+            cy.remove(event.target);
+          });
 
-        cy.on("cxttap", "edge", (event) => {
-          const edgeId = event.target.id();
-          const updatedElements = elements.filter(
-            (element: any) => element.data.id !== edgeId
-          );
-          setElements(updatedElements);
-          cy.remove(event.target);
-        });
+          cy.on("cxttap", "edge", (event) => {
+            const edgeId = event.target.id();
+            const updatedElements = elements.filter(
+              (element: any) => element.data.id !== edgeId
+            );
+            setElements(updatedElements);
+            cy.remove(event.target);
+          });
 
-        cy.on("tap", (event) => {
-          if (event.target === cy) {
-            createNodes(event);
-          }
-        });
+          cy.on("tap", (event) => {
+            if (event.target === cy) {
+              handleCreateNode(event);
+            }
+          });
 
-        cy.on("tap", "node", (event) => {
-          selectNodes(event);
-        });
-      }}
-      layout={{ name: "preset" }} // Example layout, adjust as per your needs
-      stylesheet={[
-        {
-          selector: "edge",
-          style: {
-            "curve-style": "bezier",
-            "target-arrow-shape": "triangle",
-            "line-color": "#9dbaea",
-            "target-arrow-color": "#9dbaea",
-            "font-size": "10px",
-            label: "data(weight)", // Display weight as edge label
-            "text-background-opacity": 1,
-            "text-background-color": "#ffffff",
-            "text-background-padding": "3px",
+          cy.on("tap", "node", (event) => {
+            handleSelectNodes(event);
+          });
+        }}
+        stylesheet={[
+          {
+            selector: "edge",
+            style: {
+              "curve-style": "bezier",
+              "target-arrow-shape": "triangle",
+              "line-color": "#9dbaea",
+              "target-arrow-color": "#9dbaea",
+              "font-size": "10px",
+              label: "data(weight)",
+              "text-background-opacity": 1,
+              "text-background-color": "#ffffff",
+              "text-background-padding": "3px",
+            },
           },
-        },
-        {
-          selector: "node",
-          style: {
-            label: "data(label)",
-            "text-wrap": "wrap",
-            "text-valign": "top",
-            "text-halign": "center",
+          {
+            selector: "node",
+            style: {
+              label: "data(label)",
+              "text-wrap": "wrap",
+              "text-valign": "top",
+              "text-halign": "center",
+            },
           },
-        },
-      ]}
-    />
+        ]}
+      />
+      <div className="flex justify-center items-center mt-7">
+        <Button onClick={handleOnSendElements}>Solve</Button>
+      </div>
+    </>
   );
-};
-
-export default Cyto;
+}

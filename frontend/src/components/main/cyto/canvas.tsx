@@ -14,19 +14,25 @@ export default function Canvas() {
     useRef<(nodeId: any, newLabel: string) => void>(null);
   const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
 
-  const handleSelectionChange = (nodes: any[]) => {
+  function handleSelectionChange(nodes: any[]) {
     setSelectedNodes(nodes);
-  };
+  }
 
-  const handleEditNodeLabel = () => {
-    const newLabel = window.prompt(
-      `Enter new label for the node with ID ${selectedNodes[1]}`
-    );
-    if (newLabel !== null) {
-      changeNodeLabelRef.current &&
-        changeNodeLabelRef.current(selectedNodes[1], newLabel);
+  function handleEditNodeLabel() {
+    if (selectedNodes.length === 1) {
+      const newLabel = window.prompt(
+        `Enter new label for the node with ID ${selectedNodes[0]}`
+      );
+      if (newLabel !== null) {
+        changeNodeLabelRef.current &&
+          changeNodeLabelRef.current(selectedNodes[0], newLabel);
+      }
     }
-  };
+  }
+
+  function handleOnSendElements(elements: any[]) {
+    console.log(elements);
+  }
 
   return (
     <div>
@@ -36,7 +42,7 @@ export default function Canvas() {
           <MenubarContent>
             <MenubarItem
               onClick={handleEditNodeLabel}
-              disabled={selectedNodes.length == 1}
+              disabled={selectedNodes.length !== 1}
             >
               Edit
             </MenubarItem>
@@ -59,8 +65,9 @@ export default function Canvas() {
       </Menubar>
       <Cyto
         onCreateEdge={createEdgeRef}
-        onSelectionChange={handleSelectionChange}
         onChangeNodeLabel={changeNodeLabelRef}
+        onSelectionChange={handleSelectionChange}
+        onSendElements={handleOnSendElements}
       />
     </div>
   );
