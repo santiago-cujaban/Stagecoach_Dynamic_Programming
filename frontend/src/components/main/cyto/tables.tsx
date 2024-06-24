@@ -6,61 +6,120 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Tables({ paths, solution, phases }: any) {
-  const [tableJSX, setTableJSX] = useState<JSX.Element | null>(null);
+  function renderTables() {
+    const tables = [];
 
-  function createInitialTable() {
-    console.log(solution);
-    const values: any[] = Object.values(phases);
+    const phasesArray = Object.entries(phases);
+    phasesArray.sort((a: any, b: any) => b[1] - a[1]);
+    const descPhases = Object.fromEntries(phasesArray);
+
+    const values: any[] = Object.values(descPhases);
     const lastPhase = Math.max(...values);
-    const lastPhaseNodes = Object.keys(phases).filter(
-      (key) => phases[key] === lastPhase
-    );
 
-    const lastPhaseInfo = lastPhaseNodes.reduce((acc: any, node) => {
-      if (solution[node]) {
-        acc[node] = solution[node];
+    for (let i = lastPhase; i >= 1; i--) {
+      const phaseNodes = Object.keys(descPhases).filter(
+        (key) => phases[key] === i
+      );
+
+      const phaseNodesInfo = phaseNodes.reduce((acc: any, node) => {
+        if (solution[node]) {
+          acc[node] = solution[node];
+        }
+        return acc;
+      }, {});
+
+      if (i == lastPhase) {
+        tables.push(createInitialTable(i, phaseNodesInfo));
+      } else {
+        tables.push(createOtherTables(i, phaseNodesInfo));
       }
-      return acc;
-    }, {});
+    }
+    return tables;
+  }
 
-    const tableContent = (
+  function createInitialTable(phase: number, phaseNodes: any[]) {
+    return (
       <div className="mt-5">
-        <h3 className="m-3 font-semibold text-center">Phase {lastPhase}</h3>
-        <Table>
+        <h3 className="m-3 font-semibold">Phase {phase}</h3>
+        <Table className="text-center">
           <TableHeader>
             <TableRow>
-              <TableHead>s</TableHead>
-              <TableHead>f(s,x)</TableHead>
-              <TableHead>x</TableHead>
+              <TableHead className="text-center">s</TableHead>
+              <TableHead className="text-center">f(s,x)</TableHead>
+              <TableHead className="text-center">x</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Object.keys(lastPhaseInfo).map((node) => (
+            {Object.keys(phaseNodes).map((node: any) => (
               <TableRow key={node}>
                 <TableCell>{node}</TableCell>
-                <TableCell>{lastPhaseInfo[node]["f(s,x)"]}</TableCell>
-                <TableCell>{lastPhaseInfo[node]["x"]}</TableCell>
+                <TableCell>{phaseNodes[node]["f(s,x)"]}</TableCell>
+                <TableCell>{phaseNodes[node]["x"]}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
     );
+  }
 
-    setTableJSX(tableContent);
+  function createOtherTables(phase: number, phaseNodes: any[]) {
+    const uniqueKeys = Array.from(
+      new Set(
+        Object.keys(phaseNodes).flatMap((node: any) =>
+          Object.keys(phaseNodes[node]["f(s,x)"])
+        )
+      )
+    );
+
+    return (
+      <div className="mt-5">
+        <h3 className="m-3 font-semibold">Phase {phase}</h3>
+        <Table className="text-center">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">s</TableHead>
+              {uniqueKeys.map((key) => (
+                <TableHead className="text-center" key={key}>
+                  {key}
+                </TableHead>
+              ))}
+              <TableHead className="text-center">f</TableHead>
+              <TableHead className="text-center">x</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Object.keys(phaseNodes).map((node: any) => (
+              <TableRow key={node}>
+                <TableCell>{node}</TableCell>
+                {uniqueKeys.map((key) => (
+                  <TableCell key={`${node}-${key}`}>
+                    {phaseNodes[node]["f(s,x)"][key] !== undefined
+                      ? phaseNodes[node]["f(s,x)"][key]
+                      : "-"}{" "}
+                  </TableCell>
+                ))}
+                <TableCell>{phaseNodes[node]["f"]}</TableCell>
+                <TableCell>{phaseNodes[node]["x"].join(", ")}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
   }
 
   useEffect(() => {
-    createInitialTable();
+    renderTables();
   }, []);
 
   return (
     <div className="mt-20">
       <div>
-        <h2 className="text-lg font-bold">Best Paths</h2>
+        <h2 className="text-lg font-bold text-center">Best Paths</h2>
         <div className="m-5">
           {Object.keys(paths).map((pathKey) => (
             <div key={pathKey} className="m-3">
@@ -74,8 +133,8 @@ export default function Tables({ paths, solution, phases }: any) {
         </div>
       </div>
 
-      <h2 className="text-lg font-bold">Tables</h2>
-      {tableJSX}
+      <h2 className="mt-10 text-lg font-bold text-center">Tables</h2>
+      {renderTables()}
     </div>
   );
 }

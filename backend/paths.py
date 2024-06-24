@@ -13,6 +13,7 @@ def calculate_paths(graph_nodes:dict):
     last_phase = phases[list(phases.keys())[-1]]
 
     rev_graph_nodes = dict(reversed(list(graph_nodes.items())))
+
     for node, path in rev_graph_nodes.items():
         if phases[node] == last_phase:
             table_data[node] = {'f(s,x)': path[list(path.keys())[0]], 'f': path[list(path.keys())[0]]}

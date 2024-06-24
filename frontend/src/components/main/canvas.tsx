@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Menubar,
   MenubarContent,
@@ -11,11 +11,12 @@ import { resolveData } from "./cyto/logic";
 import Tables from "./cyto/tables";
 
 export default function Canvas() {
-  const createEdgeRef = useRef<() => void>(null);
   const changeNodeLabelRef =
     useRef<(nodeId: any, newLabel: string) => void>(null);
-  const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
+  const createEdgeRef = useRef<() => void>(null);
+  const tablesRef = useRef<HTMLDivElement>(null);
 
+  const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
   const [paths, setPaths] = useState<any>({});
   const [solution, setSolution] = useState<any>({});
   const [phases, setPhases] = useState<any>({});
@@ -42,6 +43,12 @@ export default function Canvas() {
     setSolution(solution);
     setPhases(phases);
   }
+
+  useEffect(() => {
+    if (tablesRef.current) {
+      tablesRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [paths, solution, phases]);
 
   return (
     <div>
@@ -81,7 +88,9 @@ export default function Canvas() {
       {Object.keys(paths).length > 0 &&
       Object.keys(solution).length > 0 &&
       Object.keys(phases).length > 0 ? (
-        <Tables paths={paths} solution={solution} phases={phases} />
+        <div ref={tablesRef}>
+          <Tables paths={paths} solution={solution} phases={phases} />
+        </div>
       ) : null}
     </div>
   );
