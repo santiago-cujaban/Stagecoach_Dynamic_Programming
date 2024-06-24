@@ -8,12 +8,17 @@ import {
 } from "@/components/ui/menubar";
 import Cyto from "./cyto/cyto";
 import { resolveData } from "./cyto/logic";
+import Tables from "./cyto/tables";
 
 export default function Canvas() {
   const createEdgeRef = useRef<() => void>(null);
   const changeNodeLabelRef =
     useRef<(nodeId: any, newLabel: string) => void>(null);
   const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
+
+  const [paths, setPaths] = useState<any>({});
+  const [solution, setSolution] = useState<any>({});
+  const [phases, setPhases] = useState<any>({});
 
   function handleSelectionChange(nodes: any[]) {
     setSelectedNodes(nodes);
@@ -32,8 +37,10 @@ export default function Canvas() {
   }
 
   async function handleOnSendElements(elements: any[]) {
-    const { paths, solution, phases } = await resolveData(elements); // Send this data to new script tables
-    console.log(paths, solution, phases);
+    const { paths, solution, phases } = await resolveData(elements);
+    setPaths(paths);
+    setSolution(solution);
+    setPhases(phases);
   }
 
   return (
@@ -71,6 +78,11 @@ export default function Canvas() {
         onSelectionChange={handleSelectionChange}
         onSendElements={handleOnSendElements}
       />
+      {Object.keys(paths).length > 0 &&
+      Object.keys(solution).length > 0 &&
+      Object.keys(phases).length > 0 ? (
+        <Tables paths={paths} solution={solution} phases={phases} />
+      ) : null}
     </div>
   );
 }

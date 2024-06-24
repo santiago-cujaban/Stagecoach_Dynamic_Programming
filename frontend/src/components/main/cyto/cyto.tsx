@@ -222,7 +222,7 @@ export default function Cyto({
               Load Graph
             </Button>
             <Button variant="destructive" onClick={handleCleanGraph}>
-              Clear Saved Graph
+              Clear Saved
             </Button>
           </>
         )}

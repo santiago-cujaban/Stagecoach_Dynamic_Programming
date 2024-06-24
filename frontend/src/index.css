@@ -78,7 +78,7 @@
   }
   body {
     @apply bg-gradient text-foreground;
-    margin: 50px 45px;
+    margin: 50px 48px;
     background-repeat: no-repeat;
     background-attachment: fixed;
   }
